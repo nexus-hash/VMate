@@ -15,3 +15,20 @@ code {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities{
+  *navbar{
+    height: 3rem;
+    width: 100%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+    background-color: rgba(75,85,99,1);
+},
+*navtext{
+  text-align:center;
+  color:rgba(59,130,246,1);
+  font-weight:800;
+}
+}

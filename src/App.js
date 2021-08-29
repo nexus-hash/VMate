@@ -3,6 +3,8 @@ import './index.css';
 import Register from './register';
 import Login from './login';
 import mapView from './classmaps'
+import Courses from './courses';
+import classList from './class';
 
 
 function App(){
@@ -13,6 +15,8 @@ function App(){
         <Route exact path="/" component={Login} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/map" component={mapView} />
+        <Route exact path="/courses" component={Courses} />
+        <Route exact path="/class" component={classList} />
       </Switch>
     </main>
   );
