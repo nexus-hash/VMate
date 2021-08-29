@@ -1,83 +1,88 @@
 import { Component } from "react";
+import "./index.css";
+import { HashLoader } from "react-spinners";
 import apiLink from "./api";
-import {HashLoader} from 'react-spinners';
+import {Redirect} from 'react-router-dom';
 
-class classList extends Component{
-  constructor(props)
-  {
+class TimeTable extends Component {
+  constructor(props) {
     super(props);
     this.state = {
-      classData: [],
       loading: true,
-      class:this.props.location.state.course,
+      classesIn: [],
+      notLogin: window.sessionStorage.getItem("username")===null,
     };
-    this.handleAddClass = this.handleAddClass.bind(this);
-    fetch(apiLink+"classes/"+this.state.class)
-    .catch((err) => console.log(err))
-    .then((res) => res.json())
-    .then((data) => {
-      this.setState({
-        classData: data,
-        loading: false,
-      })
-    });
+    if (!(window.sessionStorage.getItem("username") === null)) {
+      fetch(apiLink + "class/" + window.sessionStorage.getItem("username"))
+        .catch((error) => console.log(error))
+        .then((response) => response.json())
+        .then((data) => {
+          this.setState({
+            classesIn: data,
+            loading: false,
+          });
+        });
+    }
   }
 
-  handleAddClass = (id) => {
+  handleDelete = (id) => () => {
     this.setState({
       loading: true,
     })
-    fetch(apiLink + "class/" + window.sessionStorage.getItem("username"), {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        classId: id,
-      }),
-    })
-    .catch((err) => console.log(err))
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.output === "Class Added") {
-        alert("Class Added Sucessfully");
-      } else if (data.output === "Clash") {
-        alert("Class Clash");
-      }else{
-        alert("Internal Server Error");
-      }
-      this.setState({
-        loading: false,
-      })
-    });
+    fetch(apiLink + "class/" +window.sessionStorage.getItem("username")+"/"+ id, {
+      method: "DELETE",
+    }).catch((error) => alert("Deletion Failed"))
+      .then((response) => response.json())
+      .then((data) => {
+        if(data.output==="Deleted Successfully"){
+          fetch(apiLink + "class/" + window.sessionStorage.getItem("username"))
+            .catch((error) => console.log(error))
+            .then((response) => response.json())
+            .then((data) => {
+              this.setState({
+                classesIn: data,
+                loading: false,
+              });
+            });
+          alert("Deleted Successfully");
+        }else{
+          this.setState({
+            loading: false,
+          });
+           alert("Deletion Failed");
+        }
+      });
   }
 
-  render(){
-    if (this.state.loading) {
-      return(<div>
-          <div className="h-screen flex-col justify-start items-center overflow-scroll">
-            <div className="bg-gray-600 h-12 w-full">
-              <div className="flex justify-center items-center h-12 ">
-                <font className="text-blue-500 font-extrabold text-lg lg:text-2xl mr-3">
-                  VMate Classes For {this.state.class}
-                </font>
-              </div>
+  render() {
+    if(this.state.notLogin){
+      return <Redirect to="/login" />
+    }
+    else if (this.state.loading) {
+      return (
+        <div className="h-screen w-full overflow-hidden">
+          <div className="flex flex-col justify-start items-center">
+            <div className="h-12 w-full flex justify-center items-center text-center bg-gray-600">
+              <text className="text-center text-blue-500 font-extrabold lg:text-4xl text-xl">
+                VMate
+              </text>
             </div>
-            <div className="bg-gray-900 h-full flex justify-center items-center ">
-              <HashLoader color={"#2196f3"} loading={true} size={100} />
+            <div className="h-screen w-full overflow-hidden bg-gray-800">
+              <div className="flex flex-col justify-center items-center text-center mt-64">
+                <HashLoader color={"#2196f3"} loading={true} size={150} />
+              </div>
             </div>
           </div>
         </div>
       );
-    } else if (this.state.classData.length === 0 && !this.state.loading) {
+    } else if( this.state.classesIn.length === 0 && !this.state.loading){
       return (
         <div>
           <div className="h-screen flex-col justify-start items-center overflow-scroll">
             <div className="bg-gray-600 h-12 w-full">
               <div className="flex justify-center items-center h-12 ">
                 <font className="text-blue-500 font-extrabold text-lg lg:text-2xl mr-3">
-                  VMate Classes For {this.state.courseid}
+                  VMate Classes
                 </font>
               </div>
             </div>
@@ -89,7 +94,8 @@ class classList extends Component{
           </div>
         </div>
       );
-    } else {
+    }
+    else {
       return (
         <div className="h-screen w-full bg-gray-900">
           <div className="flex flex-col justify-start items-center w-full ">
@@ -102,10 +108,10 @@ class classList extends Component{
             </div>
             <div className="flex flex-col justify-start items-start w-full p-8 overflow-y-scroll">
               <h2 className="text-gray-100 font-semibold lg:text-2xl text-xl mb-4">
-                Course Code : {this.state.classData[0].coursecode}
+                Classes Registered
               </h2>
-              <div className="overflow-y-scroll w-full">
-                {this.state.classData.map((classDetails) => (
+               <div className="overflow-y-scroll w-full">
+                {this.state.classesIn.map((classDetails) => (
                   <div
                     key={classDetails.id}
                     className="h-14 bg-gray-700 mt-4 p-3 rounded-md border-2 border-gray-600"
@@ -125,17 +131,16 @@ class classList extends Component{
 
                       <div className="flex justify-end items-center">
                         <button
-                          onClick={() => this.handleAddClass(classDetails.id)}
+                          onClick={this.handleDelete(classDetails.id)}
                           className="text-blue-500 block ml-5"
                         >
-                          Add
+                          Delete
                         </button>
                       </div>
                     </div>
                   </div>
                 ))}
-              </div>
-            </div>
+              </div></div>
           </div>
         </div>
       );
@@ -143,4 +148,4 @@ class classList extends Component{
   }
 }
 
-export default classList;
+export default TimeTable;

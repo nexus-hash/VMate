@@ -5,6 +5,7 @@ import Login from './login';
 import mapView from './classmaps'
 import Courses from './courses';
 import classList from './class';
+import TimeTable from './timetable';
 
 
 function App(){
@@ -17,6 +18,7 @@ function App(){
         <Route exact path="/map" component={mapView} />
         <Route exact path="/courses" component={Courses} />
         <Route exact path="/class" component={classList} />
+        <Route exact path="/timetable" component={TimeTable} />
       </Switch>
     </main>
   );

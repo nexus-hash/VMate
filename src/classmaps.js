@@ -13,6 +13,7 @@ class mapView extends Component {
     this.state = {
       data: [],
       courseid: this.props.location.state.course,
+      loading: true
     };
     fetch(apiLink + "classes-on-map/" + this.state.courseid)
       .catch((err) => console.log(err))
@@ -21,13 +22,14 @@ class mapView extends Component {
         setTimeout(() => {
           this.setState({
             data: data,
+            loading: false,
           });
-        }, 2500);
+        }, 2000);
       });
   }
 
   render() {
-    if (this.state.data.length === 0) {
+    if (this.state.loading) {
       //Showing Loading indicator until Data is Loaded
       return (
         <div>
@@ -35,18 +37,35 @@ class mapView extends Component {
             <div className="bg-gray-600 h-12 w-full">
               <div className="flex justify-center items-center h-12 ">
                 <font className="text-blue-500 font-extrabold text-lg lg:text-2xl mr-3">
-                  VMate Classes For
+                  VMate Classes For {this.state.courseid}
                 </font>
-                <HashLoader color={"#2196f3"} loading={true} size={22} />
               </div>
             </div>
             <div className="bg-gray-900 h-full flex justify-center items-center ">
-              <HashLoader color={"#2196f3"} loading={true} size={150} />
+              <HashLoader color={"#2196f3"} loading={true} size={100} />
             </div>
           </div>
         </div>
       );
-    } else {
+    } else if(this.state.data.length === 0 && !this.state.loading) {
+      return (
+        <div>
+          <div className="h-screen flex-col justify-start items-center overflow-scroll">
+            <div className="bg-gray-600 h-12 w-full">
+              <div className="flex justify-center items-center h-12 ">
+                <font className="text-blue-500 font-extrabold text-lg lg:text-2xl mr-3">
+                  VMate Classes For {this.state.courseid}
+                </font>
+              </div>
+            </div>
+            <div className="bg-gray-900 h-full flex justify-center items-center ">
+              <font className="text-red-600 font-semibold text-2xl">No Classes Found</font>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    else {
       //Display Map with Markers after Data is Loaded
       return (
         <div className="h-screen flex-col justify-start items-center overflow-hidden">

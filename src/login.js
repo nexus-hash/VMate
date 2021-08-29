@@ -17,6 +17,9 @@ class Login extends Component {
       message: "",
       loading: false,
     };
+    this.loginOnClick = this.loginOnClick.bind(this);
+    this.handleUsernameChange = this.handleUsernameChange.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
   }
 
   //Function to handle the Username Change
