@@ -41,6 +41,22 @@ If there are no classes registered it will show no classes available.
 
 ### Class List view
 
+Here you can see all available classes for a particular course.
+
+<img src="src/assets/classes.png"></img>
+
+### Adding a class
+
+If a class is not clashing with your already registered class timings. It will get added and show added sucessful but if the clashes class wont get registered and will return `Class Clash` alert.
+
+<img src="src/assets/adding.png"></img>
+
+### Map View for Classes
+
+This section of website shows a map view for the list of classes under any course. By hovering on the marker you can see a popup menu showing details of the class.
+
+<img src="src/assets/mapView.png"></img>
+
 ## How to compile and run This webapp
 
 This web app is already hosted on [VMate](https://vmate.herokuapp.com/). This deployment still have some issues to fix. Untill Then use the local run guide.
