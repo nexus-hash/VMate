@@ -1,4 +1,4 @@
 
-const apiLink = "https://vitclassmaps.herokuapp.com//";
+const apiLink = "https://vitclassmaps.herokuapp.com/";
 
 export default apiLink;
